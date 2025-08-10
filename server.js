@@ -149,7 +149,10 @@ const pages = [
 
 // CORS
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173", // local development
+    "https://institut-fd2l.vercel.app" // Vercel production
+  ],
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
