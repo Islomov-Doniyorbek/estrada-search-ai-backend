@@ -149,7 +149,10 @@ const pages = [
 
 // CORS
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173", // local development
+    "https://institut-fd2l.vercel.app" // Vercel production
+  ],
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
@@ -174,47 +177,23 @@ async function normalizeQuery(query) {
   return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || query;
 }
 
-app.get("/api/search", async (req, res) => {
+app.get("/api/suggestions", async (req, res) => {
   const q = req.query.q;
-  if (!q) return res.status(400).json({ error: "Query required" });
+  if (!q) return res.json([]);
 
   const fixedQuery = await normalizeQuery(q);
-  const match = pages.find(p =>
+
+  // Mos variantlarni topish
+  const suggestions = pages.filter(p =>
     p.content.toLowerCase().includes(fixedQuery.toLowerCase()) ||
     p.title.toLowerCase().includes(fixedQuery.toLowerCase())
-  );
+  )
+  .map(p => ({ title: p.title, path: p.path }))
+  .slice(0, 5); // Faqat 5 ta variant
 
-  if (match) {
-    return res.json({ found: true, path: match.path, fixedQuery });
-  }
-
-  const titles = pages.map(p => p.title).join(", ");
-  const resAI = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
-          { role: "user", parts: [{ text: `Mana sahifalar: ${titles}. So'rov: "${fixedQuery}". Eng mos keladigan bitta sahifa nomini ayt.` }] }
-        ]
-      })
-    }
-  );
-
-  const dataAI = await resAI.json();
-  const suggestion = dataAI.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || null;
-  const suggestedPage = pages.find(p =>
-    p.title.toLowerCase().includes(suggestion?.toLowerCase())
-  );
-
-  res.json({
-    found: false,
-    fixedQuery,
-    suggestedPath: suggestedPage?.path || null,
-    suggestion
-  });
+  res.json(suggestions);
 });
+
 
 
 const PORT = process.env.PORT || 5000;
