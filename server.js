@@ -59,10 +59,11 @@ app.get("/api/search", async (req, res) => {
 
 // 🔹 Chatbot qismini Express ichida yozamiz
 const faqs = [
-  { keys: ["qabul", "hujjat"], answer: "Qabul hujjatlari 10-iyuldan 20-avgustgacha davom etadi." },
+  { keys: ["qabul muddati", "hujjat"], answer: "Qabul hujjatlari 10-iyuldan 20-avgustgacha davom etadi." },
+  { keys: ["kasbiy imtihon", "imtihon vaqti"], answer: "Kasbiy imtihonlarni topshirish uchun abiturientlarga maxsus xabarnomalar yuboriladi, ko'rsatilgan muddatdan kechikmasdan, imtihon vaqtidan kamida 1 soat oldin kelishlari so'raladi." },
   { keys: ["to'lov", "narx"], answer: "O'qish to'lovi 12 mln so'mdan boshlanadi." },
   { keys: ["kafedra", "fakultet", "yo'nalish"], answer: "Institutda \"Estrada cholg'u ijrochiligi\" va \"Estrada xonandaligi\" fakultetlari mavjud." },
-  { keys: ["manzil", "adres"], answer: "Bizning manzil: Toshkent shahri, Universitet ko'chasi 12-uy." }
+  { keys: ["manzil", "adres", "qayerda joylashgan"], answer: "Bizning manzil: Toshkent shahri, Universitet ko'chasi 12-uy." }
 ];
 
 app.post("/chat", (req, res) => {
