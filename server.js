@@ -175,24 +175,7 @@ async function normalizeQuery(query) {
   return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || query;
 }
 
-// 🔹 1) Suggestions endpoint (variantlar chiqadi)
-app.get("/api/suggestions", async (req, res) => {
-  const q = req.query.q;
-  if (!q) return res.json([]);
-
-  const fixedQuery = await normalizeQuery(q);
-
-  const suggestions = pages.filter(p =>
-    p.content.toLowerCase().includes(fixedQuery.toLowerCase()) ||
-    p.title.toLowerCase().includes(fixedQuery.toLowerCase())
-  )
-  .map(p => ({ title: p.title, path: p.path }))
-  .slice(0, 5);
-
-  res.json(suggestions);
-});
-
-// 🔹 2) Search endpoint (bitta sahifaga yo‘naltiradi)
+// 🔹 Search endpoint (faqat yo‘naltirish uchun)
 app.get("/api/search", async (req, res) => {
   const q = req.query.q;
   if (!q) return res.status(400).json({ error: "Query required" });
@@ -211,8 +194,7 @@ app.get("/api/search", async (req, res) => {
   res.json({
     found: false,
     fixedQuery,
-    suggestedPath: null,
-    suggestion: null
+    suggestedPath: null
   });
 });
 
