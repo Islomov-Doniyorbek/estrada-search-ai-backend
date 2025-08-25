@@ -41,8 +41,8 @@ const server = http.createServer((req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 server.listen(PORT, () => {
-  console.log("Chatbot server 5000-portda ishlayapti...");
+  console.log("Chatbot server ", PORT, "-portda ishlayapti...");
 });
